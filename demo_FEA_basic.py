@@ -28,12 +28,28 @@ print ("Example: PyChrono using  beam finite elements");
 #
 
 
+
+
 # Create a Chrono::Engine physical system
 my_system = chrono.ChSystemSMC()
 
 ## Create a mesh, that is a container for groups
 ## of elements and their referenced nodes.
-my_mesh = fea.ChMesh();
+
+# Create some nodes (with default mass 0)
+nodeA = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(0, 0, 0)))
+nodeB = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(2, 0, 0)))
+nodeA.SetYoungModulus(E1)
+nodeB.SetYoungModulus(E2)
+nodeA.SetDensity(density1)
+nodeB.SetDensity(density2)
+#nodeA.(v1)
+#nodeB.(v2)
+nodeA.SetBeamRaleyghDamping(dampingCoeff1)
+nodeB.SetBeamRaleyghDamping(dampingCoeff2)
+
+mesh.AddNode(nodeA)
+mesh.AddNode(nodeB)
 
 ## Create a section, i.e. thickness and material properties
 ## for beams. This will be shared among some beams.
