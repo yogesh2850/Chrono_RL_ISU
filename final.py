@@ -34,24 +34,45 @@ writeTXT = True
 # Create a Chrono::Engine physical system
 my_system = chrono.ChSystemSMC()
 
+# Create a mesh
+mesh = fea.ChMesh()
+my_system.Add(mesh)
+
 ## Create a mesh, that is a container for groups
 ## of elements and their referenced nodes.
 
 # Create some nodes (with default mass 0)
 nodeA = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(0, 0, 0)))
-nodeB = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(2, 0, 0)))
+nodeB = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(1, 0, 0)))
+nodeC = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(0, 1, 0)))
+nodeD = fea.ChNodeFEAxyzrot(chrono.ChFrameD(chrono.ChVectorD(0, 0, 1)))
+
 nodeA.SetYoungModulus(E1)
 nodeB.SetYoungModulus(E2)
 nodeA.SetDensity(density1)
 nodeB.SetDensity(density2)
-#nodeA.(v1)
-#nodeB.(v2)
+nodeA.SetPoissonRatio(v1)
+nodeB.SetPoissonRatio(v2)
 nodeA.SetBeamRaleyghDamping(dampingCoeff1)
 nodeB.SetBeamRaleyghDamping(dampingCoeff2)
 
 mesh.AddNode(nodeA)
 mesh.AddNode(nodeB)
+mesh.AddNode(nodeC)
+mesh.AddNode(nodeD)
 
-# We do not want gravity effect on FEA elements in this demo
-my_mesh.SetAutomaticGravity(True);
+element1= fea.ChElementTetrahedron()
+element2= fea.ChElementTetrahedron()
+
+
+element1.SetNodes(nodeA, nodeB, nodeC, nodeD)
+#element2.SetNodes(nodeE, nodeF, nodeG, nodeH)
+
+mesh.AddElement(element1)
+
+# We want gravity effect on FEA elements in this demo
+mesh.SetAutomaticGravity(True)
+my_system.Set_G_acc(chrono.ChVectorD(0,-9.81, 0))
+
+
 
